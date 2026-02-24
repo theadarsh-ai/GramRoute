@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RouteCard } from "@/components/route-card";
 import { RouteMap } from "@/components/route-map";
-import { type RouteResponse, type RouteRequest, cropLabels } from "@shared/schema";
+import { type RouteResponse, type RouteRequest } from "@shared/schema";
 import { Trophy, Map, List, RotateCcw, TrendingUp, AlertCircle, Truck } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 interface RouteResultsProps {
   results: RouteResponse | null;
@@ -20,6 +20,7 @@ interface RouteResultsProps {
 export function RouteResults({ results, request, isLoading, error, onReset }: RouteResultsProps) {
   const [selectedRoute, setSelectedRoute] = useState(0);
   const [view, setView] = useState<"list" | "map">("list");
+  const { t } = useI18n();
 
   if (isLoading) {
     return (
@@ -29,8 +30,8 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
             <Truck className="w-5 h-5 text-primary animate-pulse" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Analyzing Routes...</h2>
-            <p className="text-sm text-muted-foreground">Calculating distances, costs, and spoilage for nearby mandis</p>
+            <h2 className="text-lg font-semibold">{t.results.analyzingRoutes}</h2>
+            <p className="text-sm text-muted-foreground">{t.results.analyzingSubtitle}</p>
           </div>
         </div>
         {[1, 2, 3].map((i) => (
@@ -62,11 +63,11 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
         <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
             <AlertCircle className="w-10 h-10 text-destructive" />
-            <h3 className="font-semibold text-lg">Could not find routes</h3>
+            <h3 className="font-semibold text-lg">{t.results.couldNotFind}</h3>
             <p className="text-muted-foreground text-sm max-w-md">{error}</p>
             <Button variant="outline" onClick={onReset} data-testid="button-try-again">
               <RotateCcw className="w-4 h-4 mr-2" />
-              Try Again
+              {t.results.tryAgain}
             </Button>
           </CardContent>
         </Card>
@@ -80,13 +81,13 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
         <Card className="border-card-border">
           <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
             <Map className="w-10 h-10 text-muted-foreground" />
-            <h3 className="font-semibold text-lg">No routes found</h3>
+            <h3 className="font-semibold text-lg">{t.results.noRoutesFound}</h3>
             <p className="text-muted-foreground text-sm max-w-md">
-              No mandis found within your specified distance for this crop. Try increasing the maximum travel distance or changing the crop type.
+              {t.results.noRoutesDesc}
             </p>
             <Button variant="outline" onClick={onReset} data-testid="button-adjust-search">
               <RotateCcw className="w-4 h-4 mr-2" />
-              Adjust Search
+              {t.results.adjustSearch}
             </Button>
           </CardContent>
         </Card>
@@ -95,6 +96,7 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
   }
 
   const bestRoute = results.routes[0];
+  const cropName = t.crops[results.cropType as keyof typeof t.crops] || results.cropType;
 
   return (
     <div className="mt-8 space-y-6" data-testid="results-container">
@@ -105,10 +107,10 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
           </div>
           <div>
             <h2 className="text-lg font-semibold" data-testid="text-results-title">
-              Top {results.routes.length} Routes for {cropLabels[results.cropType]}
+              {t.results.topRoutes.replace("{count}", String(results.routes.length)).replace("{crop}", cropName)}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {results.nearbyMandis.length} mandis found nearby &middot; {results.quantityQuintals} quintals
+              {t.results.mandisFound.replace("{count}", String(results.nearbyMandis.length))} &middot; {results.quantityQuintals} {t.form.quintals}
             </p>
           </div>
         </div>
@@ -118,40 +120,40 @@ export function RouteResults({ results, request, isLoading, error, onReset }: Ro
             <TabsList>
               <TabsTrigger value="list" data-testid="tab-list-view">
                 <List className="w-4 h-4 mr-1.5" />
-                Routes
+                {t.results.routes}
               </TabsTrigger>
               <TabsTrigger value="map" data-testid="tab-map-view">
                 <Map className="w-4 h-4 mr-1.5" />
-                Map
+                {t.results.map}
               </TabsTrigger>
             </TabsList>
           </Tabs>
           <Button variant="outline" size="sm" onClick={onReset} data-testid="button-new-search">
             <RotateCcw className="w-4 h-4 mr-1.5" />
-            New Search
+            {t.results.newSearch}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
-          label="Best Net Profit"
+          label={t.results.bestNetProfit}
           value={`Rs ${bestRoute.netProfit.toLocaleString("en-IN")}`}
           icon={TrendingUp}
           highlight
         />
         <StatCard
-          label="Best Route Distance"
-          value={`${bestRoute.totalDistanceKm.toFixed(1)} km`}
+          label={t.results.bestRouteDistance}
+          value={`${bestRoute.totalDistanceKm.toFixed(1)} ${t.form.km}`}
           icon={Truck}
         />
         <StatCard
-          label="Stops"
-          value={`${bestRoute.stops.length} ${bestRoute.stops.length === 1 ? "mandi" : "mandis"}`}
+          label={t.results.stops}
+          value={`${bestRoute.stops.length} ${bestRoute.stops.length === 1 ? t.results.mandi : t.results.mandis}`}
           icon={Map}
         />
         <StatCard
-          label="Profit/Quintal"
+          label={t.results.profitPerQuintal}
           value={`Rs ${bestRoute.profitPerQuintal.toLocaleString("en-IN")}`}
           icon={Trophy}
         />

@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { type RouteRecommendation, type CropType, cropLabels } from "@shared/schema";
+import { type RouteRecommendation, type CropType } from "@shared/schema";
 import {
   Trophy,
   MapPin,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 interface RouteCardProps {
   route: RouteRecommendation;
@@ -36,6 +37,7 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
   const [expanded, setExpanded] = useState(index === 0);
   const maxProfit = route.totalRevenue;
   const profitPercent = maxProfit > 0 ? (route.netProfit / maxProfit) * 100 : 0;
+  const { t } = useI18n();
 
   return (
     <Card
@@ -62,7 +64,7 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {route.stops.map((s) => s.mandi.district).join(" > ")} &middot; {route.totalDistanceKm.toFixed(1)} km
+                  {route.stops.map((s) => s.mandi.district).join(" > ")} &middot; {route.totalDistanceKm.toFixed(1)} {t.form.km}
                 </p>
               </div>
             </div>
@@ -71,23 +73,23 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
               <p className="text-lg font-bold text-primary" data-testid={`text-profit-${index}`}>
                 Rs {route.netProfit.toLocaleString("en-IN")}
               </p>
-              <p className="text-xs text-muted-foreground">net profit</p>
+              <p className="text-xs text-muted-foreground">{t.card.netProfit}</p>
             </div>
           </div>
 
           <div className="mb-3">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-muted-foreground">Profit efficiency</span>
+              <span className="text-xs text-muted-foreground">{t.card.profitEfficiency}</span>
               <span className="text-xs font-medium">{profitPercent.toFixed(0)}%</span>
             </div>
             <Progress value={profitPercent} className="h-1.5" />
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-            <MiniStat icon={CircleDollarSign} label="Revenue" value={`Rs ${route.totalRevenue.toLocaleString("en-IN")}`} />
-            <MiniStat icon={Fuel} label="Fuel" value={`-Rs ${route.totalFuelCost.toLocaleString("en-IN")}`} negative />
-            <MiniStat icon={Store} label="Market Fees" value={`-Rs ${route.totalMarketFees.toLocaleString("en-IN")}`} negative />
-            <MiniStat icon={TrendingDown} label="Spoilage" value={`-Rs ${route.totalSpoilageLoss.toLocaleString("en-IN")}`} negative />
+            <MiniStat icon={CircleDollarSign} label={t.card.revenue} value={`Rs ${route.totalRevenue.toLocaleString("en-IN")}`} />
+            <MiniStat icon={Fuel} label={t.card.fuel} value={`-Rs ${route.totalFuelCost.toLocaleString("en-IN")}`} negative />
+            <MiniStat icon={Store} label={t.card.marketFees} value={`-Rs ${route.totalMarketFees.toLocaleString("en-IN")}`} negative />
+            <MiniStat icon={TrendingDown} label={t.card.spoilage} value={`-Rs ${route.totalSpoilageLoss.toLocaleString("en-IN")}`} negative />
           </div>
 
           <button
@@ -100,11 +102,11 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
           >
             {expanded ? (
               <>
-                <ChevronUp className="w-3.5 h-3.5" /> Hide details
+                <ChevronUp className="w-3.5 h-3.5" /> {t.card.hideDetails}
               </>
             ) : (
               <>
-                <ChevronDown className="w-3.5 h-3.5" /> Show details
+                <ChevronDown className="w-3.5 h-3.5" /> {t.card.showDetails}
               </>
             )}
           </button>
@@ -130,7 +132,7 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
                   <div className="space-y-2">
                     <h4 className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                       <Lightbulb className="w-3.5 h-3.5 text-chart-2" />
-                      Tips for you
+                      {t.card.tipsForYou}
                     </h4>
                     <ul className="space-y-1.5">
                       {route.tips.map((tip, i) => (
@@ -143,7 +145,7 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
                 )}
 
                 <div className="space-y-3">
-                  <h4 className="text-xs font-medium text-muted-foreground">Stop Details</h4>
+                  <h4 className="text-xs font-medium text-muted-foreground">{t.card.stopDetails}</h4>
                   {route.stops.map((stop, i) => (
                     <div key={i} className="flex items-start gap-3 text-xs">
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -153,14 +155,14 @@ export function RouteCard({ route, index, isSelected, onSelect, cropType }: Rout
                         <div className="flex items-center justify-between gap-2">
                           <p className="font-medium">{stop.mandi.name}, {stop.mandi.district}</p>
                           <Badge variant="secondary" className="text-[10px]">
-                            Rs {stop.pricePerQuintal}/qtl
+                            Rs {stop.pricePerQuintal}{t.card.qtl}
                           </Badge>
                         </div>
                         <p className="text-muted-foreground mt-0.5">
-                          {stop.distanceFromPrevKm.toFixed(1)} km away &middot; Sell {stop.quantitySoldQuintals.toFixed(1)} qtl &middot; Revenue Rs {stop.grossRevenue.toLocaleString("en-IN")}
+                          {t.card.kmAway.replace("{dist}", stop.distanceFromPrevKm.toFixed(1))} &middot; {t.card.sell.replace("{qty}", stop.quantitySoldQuintals.toFixed(1))} &middot; {t.card.revenueLabel.replace("{amount}", stop.grossRevenue.toLocaleString("en-IN"))}
                         </p>
                         <p className="text-muted-foreground">
-                          Market fee: Rs {stop.marketFee.toLocaleString("en-IN")} &middot; Spoilage: {stop.spoilageLossQuintals.toFixed(2)} qtl lost
+                          {t.card.marketFeeLabel.replace("{amount}", stop.marketFee.toLocaleString("en-IN"))} &middot; {t.card.spoilageLabel.replace("{qty}", stop.spoilageLossQuintals.toFixed(2))}
                         </p>
                       </div>
                     </div>

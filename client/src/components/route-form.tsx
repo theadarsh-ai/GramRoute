@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { routeRequestSchema, cropTypes, cropLabels, type RouteRequest } from "@shared/schema";
+import { routeRequestSchema, cropTypes, type RouteRequest } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { MapPin, Wheat, Package, Route, Fuel, LocateFixed, Loader2, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n";
 
 interface RouteFormProps {
   onSubmit: (data: RouteRequest) => void;
@@ -19,6 +19,7 @@ interface RouteFormProps {
 
 export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
   const [geoLoading, setGeoLoading] = useState(false);
+  const { t } = useI18n();
 
   const form = useForm<RouteRequest>({
     resolver: zodResolver(routeRequestSchema),
@@ -56,7 +57,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-xl">
           <Route className="w-5 h-5 text-primary" />
-          Find Best Mandi Routes
+          {t.form.title}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -70,12 +71,12 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                   <FormItem>
                     <FormLabel className="flex items-center gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-primary" />
-                      Starting Location
+                      {t.form.startLocation}
                     </FormLabel>
                     <div className="flex gap-2">
                       <FormControl>
                         <Input
-                          placeholder="Enter your village or city name"
+                          placeholder={t.form.startLocationPlaceholder}
                           data-testid="input-start-location"
                           {...field}
                         />
@@ -107,18 +108,18 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                   <FormItem>
                     <FormLabel className="flex items-center gap-1.5">
                       <Wheat className="w-3.5 h-3.5 text-primary" />
-                      Crop Type
+                      {t.form.cropType}
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger data-testid="select-crop-type">
-                          <SelectValue placeholder="Select crop" />
+                          <SelectValue placeholder={t.form.selectCrop} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {cropTypes.map((crop) => (
                           <SelectItem key={crop} value={crop}>
-                            {cropLabels[crop]}
+                            {t.crops[crop as keyof typeof t.crops]}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -136,9 +137,9 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                     <FormLabel className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Package className="w-3.5 h-3.5 text-primary" />
-                        Quantity
+                        {t.form.quantity}
                       </span>
-                      <span className="text-xs font-normal text-muted-foreground">{qty} quintals</span>
+                      <span className="text-xs font-normal text-muted-foreground">{qty} {t.form.quintals}</span>
                     </FormLabel>
                     <FormControl>
                       <Slider
@@ -163,9 +164,9 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                     <FormLabel className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Route className="w-3.5 h-3.5 text-primary" />
-                        Max Travel Distance
+                        {t.form.maxDistance}
                       </span>
-                      <span className="text-xs font-normal text-muted-foreground">{maxDist} km</span>
+                      <span className="text-xs font-normal text-muted-foreground">{maxDist} {t.form.km}</span>
                     </FormLabel>
                     <FormControl>
                       <Slider
@@ -189,7 +190,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                   <FormItem>
                     <FormLabel className="flex items-center gap-1.5">
                       <Fuel className="w-3.5 h-3.5 text-primary" />
-                      Fuel Cost (Rs/km)
+                      {t.form.fuelCost}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -213,7 +214,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                   name="startLat"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Latitude</FormLabel>
+                      <FormLabel className="text-xs text-muted-foreground">{t.form.latitude}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -232,7 +233,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                   name="startLng"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Longitude</FormLabel>
+                      <FormLabel className="text-xs text-muted-foreground">{t.form.longitude}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -266,12 +267,12 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Finding Best Routes...
+                  {t.form.findingRoutes}
                 </>
               ) : (
                 <>
                   <MapPin className="w-4 h-4 mr-2" />
-                  Find Best Routes
+                  {t.form.findRoutes}
                 </>
               )}
             </Button>

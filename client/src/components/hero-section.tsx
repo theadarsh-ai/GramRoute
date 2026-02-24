@@ -1,6 +1,10 @@
 import { MapPin, TrendingUp, Truck, Leaf } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function HeroSection() {
+  const { t } = useI18n();
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/20 pb-24 pt-8">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -12,10 +16,14 @@ export function HeroSection() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4">
+        <div className="flex justify-end mb-4">
+          <LanguageSwitcher />
+        </div>
+
         <div className="flex flex-col items-center text-center space-y-6 py-8 md:py-12">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
             <Leaf className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">AI-Powered Mandi Route Optimizer</span>
+            <span className="text-sm font-medium text-primary">{t.hero.badge}</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight">
@@ -23,15 +31,14 @@ export function HeroSection() {
           </h1>
 
           <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Maximize your farming profits with smart mandi route recommendations.
-            We consider transport costs, spoilage, market fees, and real-time prices.
+            {t.hero.subtitle}
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 pt-4 w-full max-w-2xl">
-            <FeatureChip icon={MapPin} label="50+ Mandis" />
-            <FeatureChip icon={TrendingUp} label="Profit Optimizer" />
-            <FeatureChip icon={Truck} label="Route Planner" />
-            <FeatureChip icon={Leaf} label="Spoilage Aware" />
+            <FeatureChip icon={MapPin} label={t.hero.chip50Mandis} />
+            <FeatureChip icon={TrendingUp} label={t.hero.chipProfitOptimizer} />
+            <FeatureChip icon={Truck} label={t.hero.chipRoutePlanner} />
+            <FeatureChip icon={Leaf} label={t.hero.chipSpoilageAware} />
           </div>
         </div>
       </div>
