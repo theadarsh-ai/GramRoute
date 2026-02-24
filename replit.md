@@ -2,9 +2,7 @@
 
 ## Overview
 
-GramRoute is a full-stack web application that helps small farmers in rural India maximize their profits by recommending optimal mandi (wholesale market) routes. The app takes a farmer's location, crop type, quantity, and travel constraints, then calculates ranked route recommendations considering transport costs, crop spoilage rates, market fees, and real-time prices across 50+ Indian mandis.
-
-The core algorithm uses Haversine distance calculations to filter nearby mandis, generates single-stop and multi-stop routes, and scores them by net profit after accounting for fuel costs, loading/unloading fees, market commission, and crop-specific spoilage losses.
+GramRoute is a full-stack web application that helps small farmers in rural India maximize their profits by recommending optimal mandi (wholesale market) routes. The app uses a multi-agent AI system (LangGraph/LangChain) with Python FastAPI backend to process route recommendations considering transport costs, crop spoilage rates, market fees, and prices across 55 Indian mandis.
 
 ## User Preferences
 
@@ -21,6 +19,7 @@ Preferred communication style: Simple, everyday language.
 - **Forms**: react-hook-form with Zod validation (via @hookform/resolvers)
 - **Maps**: Leaflet.js with OpenStreetMap tiles (free, no API key needed)
 - **Animations**: Framer Motion for route card transitions
+- **PWA**: Service worker + manifest for offline capability
 - **Path aliases**: `@/` maps to `client/src/`, `@shared/` maps to `shared/`
 - **Entry point**: `client/src/main.tsx` → `App.tsx` → pages/home.tsx (main page)
 
@@ -31,15 +30,38 @@ The frontend is mobile-first and designed for low-bandwidth rural use. Key compo
 - `route-map.tsx` - Leaflet map showing routes and mandis
 - `hero-section.tsx` - Landing page hero
 
-### Backend (Express + Node.js)
+### Backend (Python FastAPI + LangGraph Multi-Agent System)
 
-- **Framework**: Express.js running on Node with TypeScript (via tsx)
-- **Entry point**: `server/index.ts` creates HTTP server, registers routes
-- **API routes** (`server/routes.ts`):
+- **Framework**: Python FastAPI running on Uvicorn (port 8000 internally)
+- **Entry point**: `server_py/main.py` - FastAPI app with API endpoints
+- **Proxy**: Express.js (`server/routes.ts`) proxies `/api/*` requests from port 5000 to Python backend on port 8000
+- **API endpoints**:
   - `POST /api/recommend-route` - Takes route request, returns ranked route recommendations
   - `GET /api/mandis` - Returns all mandi data
-- **Route optimization engine** (`server/route-optimizer.ts`): Pure TypeScript implementation using Haversine distance formula, crop-specific spoilage rates, fuel costs, market fees, and loading/unloading costs to calculate net profit for each possible route
-- **Data layer** (`server/data/mandis.ts`): Static TypeScript array with 50+ Indian mandis containing prices for 10 crop types, GPS coordinates, market fee percentages, and loading costs
+
+#### Multi-Agent AI System (LangGraph)
+
+The route optimization uses a 4-agent pipeline orchestrated by LangGraph (`server_py/agents/orchestrator.py`):
+
+1. **Data Agent** (`server_py/agents/data_agent.py`): Loads mandis.json, filters by radius using Haversine distance formula
+2. **Planner Agent** (`server_py/agents/planner_agent.py`): Generates single-stop and two-stop route candidates with split ratios
+3. **Cost/Spoilage Agent** (`server_py/agents/cost_agent.py`): Ranks routes by net profit, deduplicates, selects top 3
+4. **Explainer Agent** (`server_py/agents/explainer_agent.py`): Uses LangChain MockFarmerLLM to generate farmer-friendly explanations and tips (can be swapped with real LLM like Ollama/Groq)
+
+#### Python Models (`server_py/models.py`)
+- Pydantic models mirroring TypeScript interfaces in `shared/schema.ts`
+- CropType enum, spoilage rates, Mandi, RouteRequest, RouteStop, RouteRecommendation, RouteResponse
+
+#### Data Layer (`server_py/data/mandis.json`)
+- 55 Indian mandis in JSON format with prices for 10 crop types, GPS coordinates, market fees, loading costs
+- Covers: Tamil Nadu, Maharashtra, Karnataka, Telangana, Andhra Pradesh, Kerala, Gujarat, UP, Rajasthan, MP, Bihar, West Bengal, Chhattisgarh, Jharkhand, Delhi
+
+### Express Proxy Layer
+
+- `server/index.ts` - Express server on port 5000 with Vite HMR in dev mode
+- `server/routes.ts` - Spawns Python FastAPI backend and proxies API calls to it
+- **Dev mode**: Express serves Vite dev server + proxies API to Python on port 8000
+- **Prod mode**: Express serves built static files + proxies API to Python
 
 ### Shared Layer
 
@@ -48,26 +70,21 @@ The frontend is mobile-first and designed for low-bandwidth rural use. Key compo
   - Spoilage rates per crop
   - Mandi interface definition
   - Route request/response schemas
-  - Route recommendation types
 
 ### Development vs Production
 
-- **Dev**: Vite dev server with HMR proxied through Express (`server/vite.ts`)
-- **Prod**: Vite builds static files to `dist/public`; Express serves them (`server/static.ts`); server bundled with esbuild to `dist/index.cjs`
-- **Build script**: `script/build.ts` handles both client (Vite) and server (esbuild) builds
-
-### Database
-
-- **Current storage**: In-memory (`MemStorage` class in `server/storage.ts`) for user data; mandi data is a static TypeScript file
-- **Drizzle + PostgreSQL configured** but not actively used for core functionality. `drizzle.config.ts` points to `shared/schema.ts` and uses `DATABASE_URL` environment variable. The schema file currently defines Zod schemas rather than Drizzle table definitions
-- **To add database tables**: Define them in `shared/schema.ts` using Drizzle's `pgTable`, then run `npm run db:push`
+- **Dev**: Vite dev server with HMR through Express, Express proxies API to Python FastAPI
+- **Prod**: Vite builds static files to `dist/public`; Express serves them; API proxied to Python
+- **Build script**: `script/build.ts` handles client (Vite) and server (esbuild) builds
 
 ### Key Design Decisions
 
-1. **No external AI/LLM dependency**: The route optimization is algorithmic (Haversine + cost modeling), not LLM-based, making it fast and reliable without API keys
-2. **Static mandi data**: Prices are hardcoded in a TypeScript file rather than a database, keeping the app simple and fast. Data covers Tamil Nadu, Maharashtra, Karnataka, Telangana, Andhra Pradesh, and Delhi
-3. **Shared schema**: Zod schemas in `shared/` ensure type safety and validation consistency between frontend and backend
-4. **Mobile-first**: CSS variables for theming, responsive Tailwind classes, geolocation API support
+1. **Multi-agent AI architecture**: LangGraph orchestrates 4 specialized agents in a pipeline (Data → Planner → Cost → Explainer)
+2. **Mock LLM fallback**: ExplainerAgent uses MockFarmerLLM (template-based) that can be swapped with real LLM (Ollama, Groq, OpenAI) by replacing the class
+3. **Proxy architecture**: Express on port 5000 proxies to Python on port 8000, keeping Vite HMR working in dev
+4. **Static mandi data**: 55 mandis in JSON file, loaded and cached by DataAgent
+5. **PWA support**: Service worker for offline caching, manifest for installability
+6. **Mobile-first**: CSS variables for theming, responsive Tailwind classes, geolocation API support
 
 ## External Dependencies
 
@@ -80,10 +97,14 @@ The frontend is mobile-first and designed for low-bandwidth rural use. Key compo
 - **Forms**: react-hook-form, @hookform/resolvers, zod
 - **Data fetching**: @tanstack/react-query
 - **Maps**: leaflet
-- **Server**: express, drizzle-orm, connect-pg-simple, express-session
-- **Database**: drizzle-orm, drizzle-kit, pg (PostgreSQL driver)
+- **Server**: express (proxy layer)
 - **Build**: vite, esbuild, tsx
 
+### Python Packages
+- **API**: fastapi, uvicorn, pydantic
+- **AI/Agents**: langchain-core, langgraph
+
 ### Environment Variables
-- `DATABASE_URL` - PostgreSQL connection string (required by drizzle.config.ts, but not actively used by core app logic)
+- `DATABASE_URL` - PostgreSQL connection string (required by drizzle.config.ts, not actively used)
 - `NODE_ENV` - Controls dev vs production mode
+- `PORT` - Server port (default 5000)

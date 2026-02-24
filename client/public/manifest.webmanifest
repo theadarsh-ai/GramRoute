@@ -1,0 +1,22 @@
+{
+  "name": "GramRoute - Mandi Route Optimizer",
+  "short_name": "GramRoute",
+  "description": "AI-powered mandi route price optimizer for small farmers in rural India",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
