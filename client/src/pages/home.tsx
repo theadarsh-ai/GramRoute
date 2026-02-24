@@ -38,12 +38,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">G</span>
-            </div>
-            <span className="font-semibold text-foreground">GramRoute</span>
-          </div>
+          <span className="font-semibold text-foreground">GramRoute</span>
           <LanguageSwitcher />
         </div>
       </nav>
