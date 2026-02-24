@@ -24,7 +24,7 @@ const en = {
   form: {
     title: "Find Best Mandi Routes",
     startLocation: "Starting Location",
-    startLocationPlaceholder: "Enter your village or city name",
+    startLocationPlaceholder: "Search city or village name...",
     cropType: "Crop Type",
     selectCrop: "Select crop",
     quantity: "Quantity",
@@ -36,6 +36,11 @@ const en = {
     longitude: "Longitude",
     findRoutes: "Find Best Routes",
     findingRoutes: "Finding Best Routes...",
+    searching: "Searching...",
+    noResults: "No locations found",
+    popularCities: "Popular Cities",
+    locationSet: "Location set",
+    typeToSearch: "Type a city or village name and select from suggestions",
   },
   results: {
     analyzingRoutes: "Analyzing Routes...",
@@ -102,7 +107,7 @@ const hi: Translations = {
   form: {
     title: "सर्वश्रेष्ठ मंडी मार्ग खोजें",
     startLocation: "शुरुआती स्थान",
-    startLocationPlaceholder: "अपने गाँव या शहर का नाम दर्ज करें",
+    startLocationPlaceholder: "शहर या गाँव का नाम खोजें...",
     cropType: "फसल का प्रकार",
     selectCrop: "फसल चुनें",
     quantity: "मात्रा",
@@ -114,6 +119,11 @@ const hi: Translations = {
     longitude: "देशांतर",
     findRoutes: "सर्वश्रेष्ठ मार्ग खोजें",
     findingRoutes: "सर्वश्रेष्ठ मार्ग खोज रहे हैं...",
+    searching: "खोज रहे हैं...",
+    noResults: "कोई स्थान नहीं मिला",
+    popularCities: "लोकप्रिय शहर",
+    locationSet: "स्थान सेट",
+    typeToSearch: "शहर या गाँव का नाम लिखें और सुझावों में से चुनें",
   },
   results: {
     analyzingRoutes: "मार्गों का विश्लेषण...",
@@ -180,7 +190,7 @@ const ta: Translations = {
   form: {
     title: "சிறந்த மண்டி வழிகளைக் கண்டறியுங்கள்",
     startLocation: "தொடக்க இடம்",
-    startLocationPlaceholder: "உங்கள் கிராமம் அல்லது நகரத்தின் பெயரை உள்ளிடவும்",
+    startLocationPlaceholder: "நகரம் அல்லது கிராமத்தின் பெயரைத் தேடுங்கள்...",
     cropType: "பயிர் வகை",
     selectCrop: "பயிரைத் தேர்ந்தெடுக்கவும்",
     quantity: "அளவு",
@@ -192,6 +202,11 @@ const ta: Translations = {
     longitude: "தீர்க்கரேகை",
     findRoutes: "சிறந்த வழிகளைக் கண்டறியுங்கள்",
     findingRoutes: "சிறந்த வழிகளைக் கண்டுபிடிக்கிறது...",
+    searching: "தேடுகிறது...",
+    noResults: "இடங்கள் கிடைக்கவில்லை",
+    popularCities: "பிரபலமான நகரங்கள்",
+    locationSet: "இடம் அமைக்கப்பட்டது",
+    typeToSearch: "நகரம் அல்லது கிராமத்தின் பெயரை எழுதி பரிந்துரைகளிலிருந்து தேர்ந்தெடுக்கவும்",
   },
   results: {
     analyzingRoutes: "வழிகளை பகுப்பாய்வு செய்கிறது...",
@@ -258,7 +273,7 @@ const te: Translations = {
   form: {
     title: "ఉత్తమ మండి మార్గాలను కనుగొనండి",
     startLocation: "ప్రారంభ స్థానం",
-    startLocationPlaceholder: "మీ గ్రామం లేదా నగరం పేరు నమోదు చేయండి",
+    startLocationPlaceholder: "నగరం లేదా గ్రామం పేరు వెతకండి...",
     cropType: "పంట రకం",
     selectCrop: "పంటను ఎంచుకోండి",
     quantity: "పరిమాణం",
@@ -270,6 +285,11 @@ const te: Translations = {
     longitude: "రేఖాంశం",
     findRoutes: "ఉత్తమ మార్గాలను కనుగొనండి",
     findingRoutes: "ఉత్తమ మార్గాలను కనుగొంటోంది...",
+    searching: "వెతుకుతోంది...",
+    noResults: "ప్రదేశాలు కనుగొనబడలేదు",
+    popularCities: "ప్రముఖ నగరాలు",
+    locationSet: "ప్రదేశం సెట్ చేయబడింది",
+    typeToSearch: "నగరం లేదా గ్రామం పేరు టైప్ చేసి సూచనల నుండి ఎంచుకోండి",
   },
   results: {
     analyzingRoutes: "మార్గాలను విశ్లేషిస్తోంది...",
