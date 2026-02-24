@@ -5,7 +5,7 @@ function FarmScene() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute top-6 right-[10%] w-20 h-20 md:w-28 md:h-28 animate-pulse-glow rounded-full">
-        <svg viewBox="0 0 100 100" className="w-full h-full opacity-20">
+        <svg viewBox="0 0 100 100" className="w-full h-full opacity-35">
           <circle cx="50" cy="50" r="30" fill="hsl(32 95% 55%)" />
           {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
             <line
@@ -23,17 +23,26 @@ function FarmScene() {
         </svg>
       </div>
 
-      <svg className="absolute top-[15%] left-[5%] w-10 h-10 text-primary/20 animate-float" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
-      </svg>
-      <svg className="absolute top-[25%] right-[8%] w-8 h-8 text-primary/15 animate-float-slow" style={{animationDelay: "2s"}} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
-      </svg>
-      <svg className="absolute bottom-[30%] left-[12%] w-6 h-6 text-chart-2/20 animate-float" style={{animationDelay: "4s"}} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
-      </svg>
+      {[
+        { top: "10%", left: "3%", size: "w-12 h-12", color: "text-primary/30", anim: "animate-float", delay: "0s" },
+        { top: "20%", left: "15%", size: "w-8 h-8", color: "text-primary/25", anim: "animate-drift", delay: "1s" },
+        { top: "8%", left: "30%", size: "w-10 h-10", color: "text-chart-2/30", anim: "animate-float-slow", delay: "0.5s" },
+        { top: "30%", left: "8%", size: "w-7 h-7", color: "text-primary/20", anim: "animate-float", delay: "2.5s" },
+        { top: "15%", left: "75%", size: "w-11 h-11", color: "text-primary/25", anim: "animate-float-slow", delay: "1.5s" },
+        { top: "25%", left: "88%", size: "w-9 h-9", color: "text-chart-2/25", anim: "animate-drift", delay: "3s" },
+        { top: "40%", left: "92%", size: "w-7 h-7", color: "text-primary/20", anim: "animate-float", delay: "0.8s" },
+        { top: "35%", left: "45%", size: "w-6 h-6", color: "text-chart-2/20", anim: "animate-drift", delay: "2s" },
+        { top: "45%", left: "20%", size: "w-8 h-8", color: "text-primary/20", anim: "animate-float-slow", delay: "3.5s" },
+        { top: "5%", left: "55%", size: "w-9 h-9", color: "text-chart-2/25", anim: "animate-float", delay: "1.2s" },
+        { top: "50%", left: "70%", size: "w-6 h-6", color: "text-primary/15", anim: "animate-drift", delay: "4s" },
+        { top: "38%", left: "60%", size: "w-10 h-10", color: "text-chart-2/20", anim: "animate-float-slow", delay: "2.8s" },
+      ].map((leaf, i) => (
+        <svg key={i} className={`absolute ${leaf.size} ${leaf.color} ${leaf.anim}`} style={{top: leaf.top, left: leaf.left, animationDelay: leaf.delay}} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
+        </svg>
+      ))}
 
-      <div className="absolute bottom-0 left-0 right-0 flex justify-around items-end opacity-[0.06]">
+      <div className="absolute bottom-0 left-0 right-0 flex justify-around items-end opacity-[0.12]">
         {Array.from({length: 12}).map((_, i) => (
           <svg key={i} className="animate-sway w-8 md:w-12 h-24 md:h-36" style={{animationDelay: `${i * 0.3}s`}} viewBox="0 0 40 120" fill="none">
             <path d="M20 120 L20 30" stroke="currentColor" strokeWidth="2" className="text-primary" />
@@ -45,7 +54,7 @@ function FarmScene() {
         ))}
       </div>
 
-      <svg className="absolute bottom-0 left-0 right-0 w-full h-32 opacity-[0.04]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <svg className="absolute bottom-0 left-0 right-0 w-full h-32 opacity-[0.08]" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path d="M0,80 C200,20 400,100 600,60 C800,20 1000,80 1200,40 V120 H0 Z" fill="currentColor" className="text-primary" />
         <path d="M0,100 C150,60 350,110 550,80 C750,50 950,100 1200,70 V120 H0 Z" fill="currentColor" className="text-chart-2" />
       </svg>
