@@ -135,7 +135,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
   const qty = form.watch("quantityQuintals");
 
   return (
-    <Card className="border-card-border">
+    <Card className="border-card-border shadow-lg">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-xl">
           <Route className="w-5 h-5 text-primary" />
@@ -231,7 +231,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
                         <button
                           key={city.name}
                           type="button"
-                          className={`text-xs px-2 py-0.5 rounded-full border transition-colors ${
+                          className={`text-xs px-2 py-0.5 rounded-full border transition-all hover:scale-105 ${
                             form.getValues("startLocation") === city.name
                               ? "bg-primary/10 border-primary/30 text-primary"
                               : "border-border text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -372,7 +372,7 @@ export function RouteForm({ onSubmit, isLoading, error }: RouteFormProps) {
             <Button
               type="submit"
               size="lg"
-              className="w-full"
+              className="w-full bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg hover:shadow-xl transition-all duration-300"
               disabled={isLoading}
               data-testid="button-find-routes"
             >
