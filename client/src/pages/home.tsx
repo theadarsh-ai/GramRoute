@@ -4,11 +4,14 @@ import { apiRequest } from "@/lib/queryClient";
 import { HeroSection } from "@/components/hero-section";
 import { RouteForm } from "@/components/route-form";
 import { RouteResults } from "@/components/route-results";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/lib/i18n";
 import type { RouteRequest, RouteResponse } from "@shared/schema";
 
 export default function Home() {
   const [results, setResults] = useState<RouteResponse | null>(null);
   const [request, setRequest] = useState<RouteRequest | null>(null);
+  const { t } = useI18n();
 
   const mutation = useMutation({
     mutationFn: async (data: RouteRequest) => {
@@ -33,6 +36,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">G</span>
+            </div>
+            <span className="font-semibold text-foreground">GramRoute</span>
+          </div>
+          <LanguageSwitcher />
+        </div>
+      </nav>
+
       <HeroSection />
 
       <div className="max-w-6xl mx-auto px-4 pb-16">
@@ -65,7 +80,7 @@ export default function Home() {
               <span className="font-semibold text-foreground">GramRoute</span>
             </div>
             <p className="text-sm text-muted-foreground text-center">
-              Helping small farmers find the best mandi routes across India
+              {t.hero.subtitle.split(".")[0]}
             </p>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { MapPin, TrendingUp, Truck, Leaf } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function HeroSection() {
   const { t } = useI18n();
@@ -16,10 +15,6 @@ export function HeroSection() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4">
-        <div className="flex justify-end mb-4">
-          <LanguageSwitcher />
-        </div>
-
         <div className="flex flex-col items-center text-center space-y-6 py-8 md:py-12">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
             <Leaf className="w-4 h-4 text-primary" />
